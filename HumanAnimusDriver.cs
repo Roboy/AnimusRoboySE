@@ -561,12 +561,12 @@ public class UnityAnimusClient : MonoBehaviour {
 
 	// Utilities
 
-	public Vector3 Unity2Ros(this Vector3 vector3)
+	public Vector3 Unity2Ros(Vector3 vector3)
     {
         return new Vector3(vector3.z, -vector3.x, vector3.y);
     }
 
-	public Quaternion Unity2Ros(this Quaternion quaternion)
+	public Quaternion Unity2Ros(Quaternion quaternion)
 	{
 		return new Quaternion(-quaternion.z, quaternion.x, -quaternion.y, quaternion.w);
 	}
