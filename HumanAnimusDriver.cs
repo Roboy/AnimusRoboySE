@@ -314,7 +314,7 @@ public class UnityAnimusClient : MonoBehaviour {
 			var roll = ClipAngle(headAngles.x);
 			var pitch = ClipAngle(-headAngles.y);
 			var yaw = ClipAngle(headAngles.z);
-		
+			
 			var motorAngles = new List<float>
 			{
 				0, 0,
@@ -341,8 +341,9 @@ public class UnityAnimusClient : MonoBehaviour {
 					// leftHandClosed
 				});
 			} else {
+				
 				motorAngles.Add(0.0f);
-				motorAngles.AddRange( new List<float>(){0.0f,0.0f,0.0f,0.0f,0.0f,0.0f,0.0f})
+				motorAngles.AddRange( new List<float>(){0.0f,0.0f,0.0f,0.0f,0.0f,0.0f,0.0f});
 			}
 
 			if (trackingRight)
@@ -364,7 +365,7 @@ public class UnityAnimusClient : MonoBehaviour {
 				});
 			} else {
 				motorAngles.Add(0.0f);
-				motorAngles.AddRange( new List<float>(){0.0f,0.0f,0.0f,0.0f,0.0f,0.0f,0.0f})
+				motorAngles.AddRange( new List<float>(){0.0f,0.0f,0.0f,0.0f,0.0f,0.0f,0.0f});
 			}
 
 			return motorAngles.ToArray();
