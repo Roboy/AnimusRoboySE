@@ -329,7 +329,7 @@ public class UnityAnimusClient : MonoBehaviour {
 			{
 				motorAngles.Add(1.0f);
 				robotLeftHandPositionROS = Vector2Ros(robotLeftHandObjective.position);
-				robotLeftHandOrientationROS = Quaternion2Ros(robotLeftHandObjective.eulerAngles);
+				robotLeftHandOrientationROS = Quaternion2Ros(Quaternion.Euler(robotLeftHandObjective.eulerAngles));
 				motorAngles.AddRange(new List<float>()
 				{
 					robotLeftHandPositionROS.x,
@@ -352,7 +352,7 @@ public class UnityAnimusClient : MonoBehaviour {
 			{
 				motorAngles.Add(1.0f);
 				robotRightHandPositionROS = Vector2Ros(robotRightHandObjective.position);
-				robotRightHandOrientationROS = Quaternion2Ros(robotRightHandObjective.eulerAngles);
+				robotRightHandOrientationROS = Quaternion2Ros(Quaternion.Euler(robotRightHandObjective.eulerAngles));
 				motorAngles.AddRange(new List<float>()
 				{
 					robotRightHandPositionROS.x,
