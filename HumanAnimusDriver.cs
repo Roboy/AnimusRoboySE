@@ -328,8 +328,8 @@ public class UnityAnimusClient : MonoBehaviour {
 			if (trackingLeft)
 			{
 				motorAngles.Add(1.0f);
-				robotLeftHandPositionROS = Unity2Ros(robotLeftHandObjective.position);
-				robotLeftHandOrientationROS = Unity2Ros(robotLeftHandObjective.eulerAngles);
+				robotLeftHandPositionROS = Vector2Ros(robotLeftHandObjective.position);
+				robotLeftHandOrientationROS = Quaternion2Ros(robotLeftHandObjective.eulerAngles);
 				motorAngles.AddRange(new List<float>()
 				{
 					robotLeftHandPositionROS.x,
@@ -351,8 +351,8 @@ public class UnityAnimusClient : MonoBehaviour {
 			if (trackingRight)
 			{
 				motorAngles.Add(1.0f);
-				robotRightHandPositionROS = Unity2Ros(robotRightHandObjective.position);
-				robotRightHandOrientationROS = Unity2Ros(robotRightHandObjective.eulerAngles);
+				robotRightHandPositionROS = Vector2Ros(robotRightHandObjective.position);
+				robotRightHandOrientationROS = Quaternion2Ros(robotRightHandObjective.eulerAngles);
 				motorAngles.AddRange(new List<float>()
 				{
 					robotRightHandPositionROS.x,
@@ -563,12 +563,12 @@ public class UnityAnimusClient : MonoBehaviour {
 
 	// Utilities
 
-	public Vector3 Unity2Ros(Vector3 vector3)
+	public Vector3 Vector2Ros(Vector3 vector3)
     {
         return new Vector3(vector3.z, -vector3.x, vector3.y);
     }
 
-	public Quaternion Unity2Ros(Quaternion quaternion)
+	public Quaternion Quaternion2Ros(Quaternion quaternion)
 	{
 		return new Quaternion(-quaternion.z, quaternion.x, -quaternion.y, quaternion.w);
 	}
