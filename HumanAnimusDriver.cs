@@ -60,6 +60,7 @@ public class UnityAnimusClient : MonoBehaviour {
 	private BioIK.BioIK _myIKBody;
 	private List<BioSegment> _actuatedJoints;
 	private bool motorEnabled;
+	private float _lastUpdate;
 	
 	private bool bodyTransitionReady;
 	private int bodyTransitionDuration = 6;
@@ -296,6 +297,7 @@ public class UnityAnimusClient : MonoBehaviour {
 	public bool motor_initialise()
 	{
 		motorEnabled = true;
+		_lastUpdate = 0;
 		return true;
 	}
 
@@ -570,6 +572,19 @@ public class UnityAnimusClient : MonoBehaviour {
 	{
 		return new Quaternion(-quaternion.z, quaternion.x, -quaternion.y, quaternion.w);
 	}
+	
+	public double ClipAngle(double angle)
+    {
+	    if (angle > 180)
+	    {
+		angle -= 360;
+	    }
+	    else if (angle < -180)
+	    {
+		angle += 360;
+	    }
+	    return angle;
+    }
 }
 
 
