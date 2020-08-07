@@ -451,27 +451,27 @@ public class UnityAnimusClient : MonoBehaviour {
 
 			if (robotDriver != null)
 			{
-				if (OVRInput.Get(OVRInput.Axis1D.PrimaryIndexTrigger, OVRInput.Controller.LTouch) > 0)
-				{
+// 				if (OVRInput.Get(OVRInput.Axis1D.PrimaryIndexTrigger, OVRInput.Controller.LTouch) > 0)
+// 				{
 					robotLeftHandObjective.position = humanLeftHand.position;
 					robotLeftHandObjective.eulerAngles = humanLeftHand.eulerAngles;
 					trackingLeft = true;
-				}
-				else
-				{
-					trackingLeft = false;
-				}
+// 				}
+// 				else
+// 				{
+// 					trackingLeft = false;
+// 				}
 			
-				if (OVRInput.Get(OVRInput.Axis1D.PrimaryIndexTrigger, OVRInput.Controller.RTouch) > 0)
-				{
+// 				if (OVRInput.Get(OVRInput.Axis1D.PrimaryIndexTrigger, OVRInput.Controller.RTouch) > 0)
+// 				{
 					robotRightHandObjective.position = humanRightHand.position;
 					robotRightHandObjective.eulerAngles = humanRightHand.eulerAngles;
 					trackingRight = true;
-				}
-				else
-				{
-					trackingRight = false;
-				}
+// 				}
+// 				else
+// 				{
+// 					trackingRight = false;
+// 				}
 			}
 		}
 		
