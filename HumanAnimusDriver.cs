@@ -325,8 +325,8 @@ public class UnityAnimusClient : MonoBehaviour {
 				(float) yaw * Mathf.Deg2Rad,
 			};
 
-			if (trackingLeft)
-			{
+// 			if (trackingLeft)
+// 			{
 				motorAngles.Add(1.0f);
 				robotLeftHandPositionROS = Vector2Ros(humanLeftHand.position);
 				robotLeftHandOrientationROS = Quaternion2Ros(Quaternion.Euler(humanLeftHand.eulerAngles));
@@ -342,14 +342,14 @@ public class UnityAnimusClient : MonoBehaviour {
 					// Add other robot angles here
 					// leftHandClosed
 				});
-			} else {
+// 			} else {
 				
-				motorAngles.Add(0.0f);
-				motorAngles.AddRange( new List<float>(){0.0f,0.0f,0.0f,0.0f,0.0f,0.0f,0.0f});
-			}
+// 				motorAngles.Add(0.0f);
+// 				motorAngles.AddRange( new List<float>(){0.0f,0.0f,0.0f,0.0f,0.0f,0.0f,0.0f});
+// 			}
 
-			if (trackingRight)
-			{
+// 			if (trackingRight)
+// 			{
 				motorAngles.Add(1.0f);
 				robotRightHandPositionROS = Vector2Ros(humanRightHand.position);
 				robotRightHandOrientationROS = Quaternion2Ros(Quaternion.Euler(humanRightHand.eulerAngles));
@@ -365,10 +365,10 @@ public class UnityAnimusClient : MonoBehaviour {
 					// Add other robot angles here
 					// leftHandClosed
 				});
-			} else {
-				motorAngles.Add(0.0f);
-				motorAngles.AddRange( new List<float>(){0.0f,0.0f,0.0f,0.0f,0.0f,0.0f,0.0f});
-			}
+// 			} else {
+// 				motorAngles.Add(0.0f);
+// 				motorAngles.AddRange( new List<float>(){0.0f,0.0f,0.0f,0.0f,0.0f,0.0f,0.0f});
+// 			}
 
 			return motorAngles.ToArray();
 		
