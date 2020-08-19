@@ -328,8 +328,8 @@ public class UnityAnimusClient : MonoBehaviour {
 // 			if (trackingLeft)
 // 			{
 				motorAngles.Add(1.0f);
-				robotLeftHandPositionROS = humanLeftHand.position;//Vector2Ros(humanLeftHand.position);
-				robotLeftHandOrientationROS = Quaternion.Euler(humanLeftHand.eulerAngles);//Quaternion2Ros(Quaternion.Euler(humanLeftHand.eulerAngles));
+				robotLeftHandPositionROS = Vector2Ros(humanLeftHand.position);
+				robotLeftHandOrientationROS = Quaternion2Ros(Quaternion.Euler(humanLeftHand.eulerAngles));
 				motorAngles.AddRange(new List<float>()
 				{
 					robotLeftHandPositionROS.x,
@@ -351,8 +351,8 @@ public class UnityAnimusClient : MonoBehaviour {
 // 			if (trackingRight)
 // 			{
 				motorAngles.Add(1.0f);
-				robotRightHandPositionROS = humanRightHand.position;//Vector2Ros(humanRightHand.position);
-				robotRightHandOrientationROS = Quaternion.Euler(humanRightHand.eulerAngles);//Quaternion2Ros(Quaternion.Euler(humanRightHand.eulerAngles));
+				robotRightHandPositionROS = Vector2Ros(humanRightHand.position);
+				robotRightHandOrientationROS = Quaternion2Ros(Quaternion.Euler(humanRightHand.eulerAngles));
 				motorAngles.AddRange(new List<float>()
 				{
 					robotRightHandPositionROS.x,
@@ -362,13 +362,25 @@ public class UnityAnimusClient : MonoBehaviour {
 					robotRightHandOrientationROS.y,
 					robotRightHandOrientationROS.z,
 					robotRightHandOrientationROS.w
-					// Add other robot angles here
-					// leftHandClosed
 				});
 // 			} else {
 // 				motorAngles.Add(0.0f);
 // 				motorAngles.AddRange( new List<float>(){0.0f,0.0f,0.0f,0.0f,0.0f,0.0f,0.0f});
 // 			}
+			
+				motorAngles.Add(1.0f);
+				robotHeadPositionROS = Vector2Ros(humanHead.position);
+				robotHeadOrientationROS = Quaternion2Ros(Quaternion.Euler(humanHead.eulerAngles));
+				motorAngles.AddRange(new List<float>()
+				{
+					robotHeadPositionROS.x,
+					robotHeadPositionROS.y,
+					robotHeadPositionROS.z,
+					robotHeadOrientationROS.x,
+					robotHeadOrientationROS.y,
+					robotHeadOrientationROS.z,
+					robotHeadOrientationROS.w
+				});
 
 			return motorAngles.ToArray();
 		
