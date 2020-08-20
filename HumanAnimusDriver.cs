@@ -44,8 +44,10 @@ public class UnityAnimusClient : MonoBehaviour {
 	public Transform robotRightHandObjective;
 	private Vector3 robotLeftHandPositionROS;
 	private Vector3 robotRightHandPositionROS;
+	private Vector3 robotHeadPositionROS;
 	private Quaternion robotLeftHandOrientationROS;
 	private Quaternion robotRightHandOrientationROS;
+	private Quaternion robotHeadOrientationROS;
 	public Transform humanRightHand;
 	public Transform humanLeftHand;
 	public Transform humanHead;
