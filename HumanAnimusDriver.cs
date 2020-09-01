@@ -10,6 +10,7 @@ using OpenCVForUnity.ImgprocModule;
 using OpenCVForUnity.UnityUtils;
 #endif
 using UnityEngine;
+using UnityEngine.Networking;
 
 public class UnityAnimusClient : MonoBehaviour {
 	
@@ -85,6 +86,11 @@ public class UnityAnimusClient : MonoBehaviour {
 	public string currentEmotion;
 	public string oldEmotion;
 	
+	private const string LEDS_OFF = "off";
+	private const string LEDS_CONNECTING = "robot_connecting";	
+	private const string LEDS_CONNECTED = "robot_established";
+	private const string LEDS_IS_CONNECTED = "if_connected";
+	
 	public void Start()
 	{
 		motorEnabled = false;
@@ -93,6 +99,7 @@ public class UnityAnimusClient : MonoBehaviour {
 		voiceEnabled = false;
 		initMats = false;
 		bodyTransitionReady = false;
+		StartCoroutine(SendLEDCommand(LEDS_CONNECTING));
 		StartCoroutine(StartBodyTransition());
 	}
 	
@@ -145,6 +152,22 @@ public class UnityAnimusClient : MonoBehaviour {
 		
 		bodyTransitionReady = true;
 	}
+	
+	 IEnumerator SendLEDCommand(string command) {
+		UnityWebRequest www = UnityWebRequest.Get("https://lib.roboy.org/teleportal/" + command);
+		yield return www.SendWebRequest();
+
+// 		if(www.isNetworkError || www.isHttpError) {
+// 		    Debug.Log(www.error);
+// 		}
+// 		else {
+// 		    // Show results as text
+// 		    Debug.Log(www.downloadHandler.text);
+
+// 		    // Or retrieve results as binary data
+// 		    byte[] results = www.downloadHandler.data;
+// 		}
+	   }
 
 	// --------------------------Vision Modality----------------------------------
 	public bool vision_initialise()
@@ -300,6 +323,7 @@ public class UnityAnimusClient : MonoBehaviour {
 	{
 		motorEnabled = true;
 		_lastUpdate = 0;
+		StartCoroutine(SendLEDCommand(LEDS_CONNECTED));
 		return true;
 	}
 
@@ -452,6 +476,7 @@ public class UnityAnimusClient : MonoBehaviour {
 	public bool motor_close()
 	{
 		motorEnabled = false;
+		StartCoroutine(SendLEDCommand(LEDS_OFF));
 		return true;
 	}
 
