@@ -12,6 +12,15 @@ using OpenCVForUnity.UnityUtils;
 using UnityEngine;
 using UnityEngine.Networking;
 
+public class BypassCertificate : CertificateHandler
+ {
+  protected override bool ValidateCertificate(byte[] certificateData)
+  {
+   //Simply return true no matter what
+   return true;
+  }
+ }
+
 public class UnityAnimusClient : MonoBehaviour {
 	
 	public GameObject OVRRig;
@@ -154,8 +163,27 @@ public class UnityAnimusClient : MonoBehaviour {
 	}
 	
 	 IEnumerator SendLEDCommand(string command) {
-		UnityWebRequest www = UnityWebRequest.Get("https://lib.roboy.org/teleportal/" + command);
-		yield return www.SendWebRequest();
+	 	 using (UnityWebRequest webRequest = UnityWebRequest.Get("https://lib.roboy.org/teleportal/" + command))
+		  {
+		   webRequest.certificateHandler = new BypassCertificate();
+		   // Request and wait for the desired page.
+		   yield return webRequest.SendWebRequest();
+
+// 		   string[] pages = uri.Split('/');
+// 		   int page = pages.Length - 1;
+
+// 		   if (webRequest.isNetworkError)
+// 		   {
+// 		    Debug.Log(pages[page] + ": Error: " + webRequest.error);
+// 		   }
+// 		   else
+// 		   {
+// 		    Debug.Log(pages[page] + ":\nReceived: " + webRequest.downloadHandler.text);
+// 		   }
+		  }
+		
+// 		UnityWebRequest www = UnityWebRequest.Get("https://lib.roboy.org/teleportal/" + command);
+// 		yield return www.SendWebRequest();
 
 // 		if(www.isNetworkError || www.isHttpError) {
 // 		    Debug.Log(www.error);
