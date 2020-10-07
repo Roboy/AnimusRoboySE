@@ -65,6 +65,8 @@ public class UnityAnimusClient : MonoBehaviour {
 	public float ForwardDeadzone;
 	public float SidewaysDeadzone;
 	public float RotationDeadzone;
+	private float humanRightHandOpen;
+	private float humanLeftHandOpen;
 	private bool trackingRight;
 	private bool trackingLeft;
 	
@@ -381,7 +383,7 @@ public class UnityAnimusClient : MonoBehaviour {
 
 // 			if (trackingLeft)
 // 			{
-				motorAngles.Add(1.0f);
+				motorAngles.Add(humanLeftHandOpen);
 				robotLeftHandPositionROS = Vector2Ros(humanLeftHand.position);
 				robotLeftHandOrientationROS = Quaternion2Ros(Quaternion.Euler(humanLeftHand.eulerAngles));
 				motorAngles.AddRange(new List<float>()
@@ -404,7 +406,7 @@ public class UnityAnimusClient : MonoBehaviour {
 
 // 			if (trackingRight)
 // 			{
-				motorAngles.Add(1.0f);
+				motorAngles.Add(humanRightHandOpen);
 				robotRightHandPositionROS = Vector2Ros(humanRightHand.position);
 				robotRightHandOrientationROS = Quaternion2Ros(Quaternion.Euler(humanRightHand.eulerAngles));
 				motorAngles.AddRange(new List<float>()
@@ -522,6 +524,7 @@ public class UnityAnimusClient : MonoBehaviour {
 // 				{
 					robotLeftHandObjective.position = humanLeftHand.position;
 					robotLeftHandObjective.eulerAngles = humanLeftHand.eulerAngles;
+					humanLeftHandOpen = OVRInput.Get(OVRInput.Axis1D.PrimaryHandTrigger, OVRInput.Controller.LTouch);
 					trackingLeft = true;
 // 				}
 // 				else
@@ -533,6 +536,7 @@ public class UnityAnimusClient : MonoBehaviour {
 // 				{
 					robotRightHandObjective.position = humanRightHand.position;
 					robotRightHandObjective.eulerAngles = humanRightHand.eulerAngles;
+					humanRightHandOpen = OVRInput.Get(OVRInput.Axis1D.PrimaryHandTrigger, OVRInput.Controller.RTouch);
 					trackingRight = true;
 // 				}
 // 				else
