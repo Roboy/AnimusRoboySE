@@ -524,7 +524,7 @@ public class UnityAnimusClient : MonoBehaviour {
 // 				{
 					robotLeftHandObjective.position = humanLeftHand.position;
 					robotLeftHandObjective.eulerAngles = humanLeftHand.eulerAngles;
-					humanLeftHandOpen = OVRInput.Get(OVRInput.Axis1D.PrimaryHandTrigger, OVRInput.Controller.LTouch);
+					humanLeftHandOpen = OVRInput.Get(OVRInput.Axis1D.PrimaryHandTrigger, OVRInput.Controller.LTrackedRemote);
 					trackingLeft = true;
 // 				}
 // 				else
@@ -536,7 +536,7 @@ public class UnityAnimusClient : MonoBehaviour {
 // 				{
 					robotRightHandObjective.position = humanRightHand.position;
 					robotRightHandObjective.eulerAngles = humanRightHand.eulerAngles;
-					humanRightHandOpen = OVRInput.Get(OVRInput.Axis1D.PrimaryHandTrigger, OVRInput.Controller.RTouch);
+					humanRightHandOpen = OVRInput.Get(OVRInput.Axis1D.PrimaryHandTrigger, OVRInput.Controller.RTrackedRemote);
 					trackingRight = true;
 // 				}
 // 				else
