@@ -352,8 +352,13 @@ public class UnityAnimusClient : MonoBehaviour {
 
 	public bool proprioception_set(float[] currSample)
 	{
-		byte[] noize = { currSample[0] };
-		OVRHaptics.Channels[1].Preempt(new OVRHapticsClip(noize, 1));
+// 		byte[] noize = { currSample[0] };
+// 		OVRHaptics.Channels[1].Preempt(new OVRHapticsClip(noize, 1));
+		if (currSample[0]>0) {
+			OVRInput.SetControllerVibration(1, 1, OVRInput.Controller.LTouch)
+		}
+		
+		
 		return true;
 	}
 
