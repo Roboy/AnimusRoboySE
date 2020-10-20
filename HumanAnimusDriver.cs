@@ -261,6 +261,17 @@ public class UnityAnimusClient : MonoBehaviour {
 			rgb = new Mat();
 			initMats = true;
 		}
+
+		if (currSample.Data.Length != currShape[0] * currShape[1] * 1.5)
+		{
+			return true;
+		}
+
+		if (currShape[0] <= 100 || currShape[1] <= 100)
+		{
+			return true;
+		}
+		
 		yuv.put(0, 0, currSample.Data);
 		
 		Imgproc.cvtColor(yuv, rgb, Imgproc.COLOR_YUV2BGR_I420);
@@ -292,6 +303,7 @@ public class UnityAnimusClient : MonoBehaviour {
             {
 	            wrapMode = TextureWrapMode.Clamp
             };
+            return true;
         }
 		
 		//TODO apply stereo images
