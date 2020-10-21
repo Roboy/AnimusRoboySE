@@ -307,8 +307,8 @@ public class UnityAnimusClient : MonoBehaviour {
         }
 		
 		//TODO apply stereo images
-        Utils.matToTexture2D (rgb, _leftTexture);
-        _leftRenderer.material.mainTexture = _leftTexture;
+        //Utils.matToTexture2D (rgb, _leftTexture);
+        //_leftRenderer.material.mainTexture = _leftTexture;
 #endif
 		return true;
 	}
