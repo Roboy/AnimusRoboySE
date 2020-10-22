@@ -352,11 +352,12 @@ public class UnityAnimusClient : MonoBehaviour {
 
 	public bool proprioception_set(float[] currSample)
 	{
-		if (currSample.Length > 0) {
-			if (currSample[0]>0) {
-				OVRInput.SetControllerVibration(1, 1, OVRInput.Controller.LTouch);
-			}
+		if (currSample.Length > 2) {
+// 			if (currSample[0]>0) {
+			OVRInput.SetControllerVibration(currSample[0], currSample[1], OVRInput.Controller.LTouch);
+// 			}
 		}
+		
 		return true;
 	}
 
