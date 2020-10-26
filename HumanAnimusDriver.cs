@@ -632,9 +632,9 @@ public class UnityAnimusClient : MonoBehaviour {
 		return true;
 	}
 
-	public float[] emotion_get()
+	public bool[] emotion_get()
 	{
-		float[] buttons = {OVRInput.Get(OVRInput.Button.One), OVRInput.Get(OVRInput.Button.Two), OVRInput.Get(OVRInput.Button.Three), OVRInput.Get(OVRInput.Button.Four)};
+		bool[] buttons = {OVRInput.Get(OVRInput.Button.One), OVRInput.Get(OVRInput.Button.Two), OVRInput.Get(OVRInput.Button.Three), OVRInput.Get(OVRInput.Button.Four)};
 		return buttons;
 // 		if (!bodyTransitionReady) return null;
 // 		if (oldEmotion != currentEmotion)
