@@ -67,6 +67,7 @@ public class UnityAnimusClient : MonoBehaviour {
 	public float RotationDeadzone;
 	private float humanRightHandOpen;
 	private float humanLeftHandOpen;
+	private Vector2 eyesPosition;
 	private bool trackingRight;
 	private bool trackingLeft;
 	
@@ -439,6 +440,8 @@ public class UnityAnimusClient : MonoBehaviour {
 					robotRightHandOrientationROS.z,
 					robotRightHandOrientationROS.w
 				});
+				
+				
 // 			} else {
 // 				motorAngles.Add(0.0f);
 // 				motorAngles.AddRange( new List<float>(){0.0f,0.0f,0.0f,0.0f,0.0f,0.0f,0.0f});
@@ -457,6 +460,10 @@ public class UnityAnimusClient : MonoBehaviour {
 					robotHeadOrientationROS.z,
 					robotHeadOrientationROS.w
 				});
+				
+				eyesPosition = OVRInput.Get(OVRInput.RawAxis2D.RThumbstick)
+				motorAngles.Add(eyesPosition[0]);
+				motorAngles.Add(eyesPosition[1]);
 
 			return motorAngles.ToArray();
 		
@@ -566,46 +573,7 @@ public class UnityAnimusClient : MonoBehaviour {
 			}
 		}
 		
-		LeftButton1 = OVRInput.Get(OVRInput.Button.Two);
-		LeftButton2 = OVRInput.Get(OVRInput.Button.One);
-		RightButton1 = OVRInput.Get(OVRInput.Button.Four);
-		RightButton2 = OVRInput.Get(OVRInput.Button.Three);
 		
-		var controlCombination = ((LeftButton1 ? 1 : 0) * 1) + 
-		                         ((LeftButton2 ? 1 : 0) * 2) +
-		                         ((RightButton1 ? 1 : 0) * 4) +
-		                         ((RightButton2 ? 1 : 0) * 8);
-
-		switch (controlCombination)
-		{
-			case 0:
-				// All off
-				currentEmotion = AnimusUtils.EmotionName.neutral.ToString();
-				break;
-			case 1:
-				// Left Button 1
-				currentEmotion = AnimusUtils.EmotionName.angry.ToString();
-				break;
-			case 2:
-				// Left Button 2
-				currentEmotion = AnimusUtils.EmotionName.fear.ToString();
-				break;
-			case 4:
-				// Right Button 1
-				currentEmotion = AnimusUtils.EmotionName.sad.ToString();
-				break;
-			case 8:
-				// Right Button 2
-				currentEmotion = AnimusUtils.EmotionName.happy.ToString();
-				break;
-			case 10:
-				// Right Button 2 and Left Button 2
-				currentEmotion = AnimusUtils.EmotionName.surprised.ToString();
-				break;
-			default:
-				Debug.Log("Unassigned Combination");
-				break;
-		}
 	}
 
 	// --------------------------Voice Modality----------------------------------
@@ -632,10 +600,51 @@ public class UnityAnimusClient : MonoBehaviour {
 		return true;
 	}
 
-	public bool[] emotion_get()
+	public string emotion_get()
 	{
-		bool[] buttons = {OVRInput.Get(OVRInput.Button.One), OVRInput.Get(OVRInput.Button.Two), OVRInput.Get(OVRInput.Button.Three), OVRInput.Get(OVRInput.Button.Four)};
-		return buttons;
+		
+		LeftButton1 = OVRInput.Get(OVRInput.Button.One);
+		LeftButton2 = OVRInput.Get(OVRInput.Button.Two);
+		RightButton1 = OVRInput.Get(OVRInput.Button.Four);
+		RightButton2 = OVRInput.Get(OVRInput.Button.Three);
+		
+		var controlCombination = ((LeftButton1 ? 1 : 0) * 1) + 
+		                         ((LeftButton2 ? 1 : 0) * 2) +
+		                         ((RightButton1 ? 1 : 0) * 4) +
+		                         ((RightButton2 ? 1 : 0) * 8);
+
+		switch (controlCombination)
+		{
+			case 0:
+				// All off
+				currentEmotion = "off";
+				break;
+			case 1:
+				// Left Button 1
+				currentEmotion = "X";
+				break;
+			case 2:
+				// Left Button 2
+				currentEmotion = "Y";
+				break;
+			case 4:
+				// Right Button 1
+				currentEmotion = "A";
+				break;
+			case 8:
+				// Right Button 2
+				currentEmotion = "B";
+				break;
+			case 10:
+				// Right Button 2 and Left Button 2
+				currentEmotion = "BY";
+				break;
+			default:
+				Debug.Log("Unassigned Combination");
+				break;
+		}
+		
+		return currentEmotion;
 // 		if (!bodyTransitionReady) return null;
 // 		if (oldEmotion != currentEmotion)
 // 		{
