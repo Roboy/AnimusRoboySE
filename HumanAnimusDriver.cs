@@ -461,7 +461,7 @@ public class UnityAnimusClient : MonoBehaviour {
 					robotHeadOrientationROS.w
 				});
 				
-				eyesPosition = OVRInput.Get(OVRInput.RawAxis2D.RThumbstick)
+				eyesPosition = OVRInput.Get(OVRInput.RawAxis2D.RThumbstick);
 				motorAngles.Add(eyesPosition[0]);
 				motorAngles.Add(eyesPosition[1]);
 
