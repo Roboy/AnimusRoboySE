@@ -621,19 +621,19 @@ public class UnityAnimusClient : MonoBehaviour {
 				break;
 			case 1:
 				// Left Button 1
-				currentEmotion = "X";
+				currentEmotion = "A";
 				break;
 			case 2:
 				// Left Button 2
-				currentEmotion = "Y";
+				currentEmotion = "B";
 				break;
 			case 4:
 				// Right Button 1
-				currentEmotion = "A";
+				currentEmotion = "X";
 				break;
 			case 8:
 				// Right Button 2
-				currentEmotion = "B";
+				currentEmotion = "Y";
 				break;
 			case 10:
 				// Right Button 2 and Left Button 2
