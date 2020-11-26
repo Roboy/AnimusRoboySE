@@ -1,8 +1,10 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
+using Animus.Data;
+using Animus.RobotProto;
 using AnimusCommon;
+using Google.Protobuf.Collections;
 using BioIK;
 #if ANIMUS_USE_OPENCV
 using OpenCVForUnity.CoreModule;
@@ -11,6 +13,9 @@ using OpenCVForUnity.UnityUtils;
 #endif
 using UnityEngine;
 using UnityEngine.Networking;
+using Quaternion = UnityEngine.Quaternion;
+using Transform = UnityEngine.Transform;
+using Vector3 = UnityEngine.Vector3;
 
 public class BypassCertificate : CertificateHandler
  {
@@ -26,7 +31,7 @@ public class UnityAnimusClient : MonoBehaviour {
 	public GameObject OVRRig;
 	public Transform TrackingSpace;
 	public GameObject robotBody;
-	public RobotDetails chosenDetails;
+	public Robot chosenDetails;
 	
 	// vision variables
 	public GameObject LeftEye;
@@ -39,7 +44,8 @@ public class UnityAnimusClient : MonoBehaviour {
 	private Texture2D _rightTexture;
 	private bool visionEnabled;
 	private bool triggerResChange;
-	private List<int> imageDims;
+	// private List<int> imageDims;
+	private RepeatedField<uint> _imageDims;
 #if ANIMUS_USE_OPENCV
 	private Mat yuv;
 	private Mat rgb;
@@ -67,6 +73,7 @@ public class UnityAnimusClient : MonoBehaviour {
 	public float RotationDeadzone;
 	private float humanRightHandOpen;
 	private float humanLeftHandOpen;
+	private Vector2 eyesPosition;
 	private bool trackingRight;
 	private bool trackingLeft;
 	
@@ -78,6 +85,9 @@ public class UnityAnimusClient : MonoBehaviour {
 	
 	private bool bodyTransitionReady;
 	private int bodyTransitionDuration = 6;
+	
+	private Animus.Data.Float32Array motorMsg;
+	private Sample motorSample;
 	
 	// audition variables
 	private bool auditionEnabled;
@@ -96,6 +106,8 @@ public class UnityAnimusClient : MonoBehaviour {
 	public bool RightButton2;
 	public string currentEmotion;
 	public string oldEmotion;
+	private Animus.Data.StringSample emotionMsg;
+	private Sample emotionSample;
 	
 	private const string LEDS_OFF = "off";
 	private const string LEDS_CONNECTING = "robot_connecting";	
@@ -235,7 +247,7 @@ public class UnityAnimusClient : MonoBehaviour {
 
 		_leftRenderer = _leftPlane.GetComponent<Renderer>();
 		_rightRenderer = _rightPlane.GetComponent<Renderer>();
-		imageDims = new List<int>() {0, 0, 0};
+		_imageDims = new RepeatedField<uint>();
 		visionEnabled = true;
 		
 		// Comment the line below to enable two images - Not tested
@@ -243,7 +255,7 @@ public class UnityAnimusClient : MonoBehaviour {
 		return visionEnabled;
 	}
 
-	public bool vision_set(ImageSample currSample)
+	public bool vision_set(ImageSamples currSamples)
 	{
 		if (!bodyTransitionReady) return true;
 		
@@ -252,52 +264,73 @@ public class UnityAnimusClient : MonoBehaviour {
 			Debug.Log("Vision modality not enabled. Cannot set");
 			return false;
 		}
-		
-		var currShape = currSample.DataShape;
-#if ANIMUS_USE_OPENCV
-		if (!initMats)
+
+		if (currSamples == null)
 		{
-			yuv =  new Mat((int)(currShape[1]*1.5), currShape[0] , CvType.CV_8UC1);
-			rgb = new Mat();
-			initMats = true;
+			return false;
 		}
-		yuv.put(0, 0, currSample.Data);
+		var currSample = currSamples.Samples[0];
 		
-		Imgproc.cvtColor(yuv, rgb, Imgproc.COLOR_YUV2BGR_I420);
-		
-		if (imageDims.Count == 0 || currShape[0] != imageDims[0] || currShape[1] != imageDims[1] || currShape[2] != imageDims[2])
-        {
-	        imageDims = currShape.ToList();
-	        var scaleX = (float) imageDims[0] / (float) imageDims[1];
-	        
-	        Debug.Log("Resize triggered. Setting texture resolution to " + currShape[0] + "x" + currShape[1]);
-            Debug.Log("Setting horizontal scale to " + scaleX +  " " + (float)imageDims[0] + " " + (float)imageDims[1]);
-            
-            Vector3 currentScale = _leftPlane.transform.localScale;
+		try
+		{
+			var currShape = currSample.DataShape;
+			Debug.Log($"{currShape[0]}, {currShape[1]}");
+#if ANIMUS_USE_OPENCV
+			if (!initMats)
+			{
+				yuv =  new Mat((int)(currShape[1]*1.5), (int)currShape[0] , CvType.CV_8UC1);
+				rgb = new Mat();
+				initMats = true;
+			}
+			
+			if (currSample.Data.Length != currShape[0] * currShape[1] * 1.5)
+			{
+				return true;
+			}
+			
+			if (currShape[0] <= 100 || currShape[1] <= 100)
+			{
+				return true;
+			}
+			
+			yuv.put(0, 0, currSample.Data.ToByteArray());
+			
+			Imgproc.cvtColor(yuv, rgb, Imgproc.COLOR_YUV2BGR_I420);
+			
+			if (_imageDims.Count == 0 || currShape[0] != _imageDims[0] || currShape[1] != _imageDims[1] || currShape[2] != _imageDims[2])
+	        {
+		        _imageDims = currShape;
+		        var scaleX = (float) _imageDims[0] / (float) _imageDims[1];
+		        
+		        Debug.Log("Resize triggered. Setting texture resolution to " + currShape[0] + "x" + currShape[1]);
+	            Debug.Log("Setting horizontal scale to " + scaleX +  " " + (float)_imageDims[0] + " " + (float)_imageDims[1]);
+	            
+	            UnityEngine.Vector3 currentScale = _leftPlane.transform.localScale;
+	            currentScale.x =  scaleX;
 
-            currentScale.x =  scaleX;
-
-//            currentScale.x = (float) (currentScale.x * 0.75);
-//            currentScale.y = (float) (currentScale.y * 0.75);
-//            currentScale.z = (float) (currentScale.z * 0.75);
-            
-            _leftPlane.transform.localScale = currentScale;
-            _leftTexture = new Texture2D(rgb.width(), rgb.height(), TextureFormat.ARGB32, false)
-            {
-                wrapMode = TextureWrapMode.Clamp
-            };
-            
-            _rightPlane.transform.localScale = currentScale;
-            _rightTexture = new Texture2D(rgb.width(), rgb.height(), TextureFormat.ARGB32, false)
-            {
-	            wrapMode = TextureWrapMode.Clamp
-            };
-        }
-		
-		//TODO apply stereo images
-        Utils.matToTexture2D (rgb, _leftTexture);
-        _leftRenderer.material.mainTexture = _leftTexture;
+	            _leftPlane.transform.localScale = currentScale;
+	            _leftTexture = new Texture2D(rgb.width(), rgb.height(), TextureFormat.ARGB32, false)
+	            {
+	                wrapMode = TextureWrapMode.Clamp
+	            };
+	            
+	            // _rightPlane.transform.localScale = currentScale;
+	            // _rightTexture = new Texture2D(rgb.width(), rgb.height(), TextureFormat.ARGB32, false)
+	            // {
+		           //  wrapMode = TextureWrapMode.Clamp
+	            // };
+	            return true;
+	        }
+			
+			//TODO apply stereo images
+	        Utils.matToTexture2D (rgb, _leftTexture);
+	        _leftRenderer.material.mainTexture = _leftTexture;
 #endif
+		}
+		catch (Exception e)
+		{
+			Debug.Log(e);
+		}
 		return true;
 	}
 
@@ -340,6 +373,12 @@ public class UnityAnimusClient : MonoBehaviour {
 
 	public bool proprioception_set(float[] currSample)
 	{
+		if (currSample.Length > 2) {
+// 			if (currSample[0]>0) {
+			OVRInput.SetControllerVibration(currSample[0], currSample[1], OVRInput.Controller.LTouch);
+// 			}
+		}
+		
 		return true;
 	}
 
@@ -353,11 +392,14 @@ public class UnityAnimusClient : MonoBehaviour {
 	{
 		motorEnabled = true;
 		_lastUpdate = 0;
+		motorMsg = new Float32Array();
+		motorSample = new Sample(DataMessage.Types.DataType.Float32Arr, motorMsg);
+
 		StartCoroutine(SendLEDCommand(LEDS_CONNECTED));
 		return true;
 	}
 
-	public float[] motor_get()
+	public Sample motor_get()
 	{
 		if (!bodyTransitionReady) return null;
 		if (!motorEnabled)
@@ -421,6 +463,8 @@ public class UnityAnimusClient : MonoBehaviour {
 					robotRightHandOrientationROS.z,
 					robotRightHandOrientationROS.w
 				});
+				
+				
 // 			} else {
 // 				motorAngles.Add(0.0f);
 // 				motorAngles.AddRange( new List<float>(){0.0f,0.0f,0.0f,0.0f,0.0f,0.0f,0.0f});
@@ -439,8 +483,16 @@ public class UnityAnimusClient : MonoBehaviour {
 					robotHeadOrientationROS.z,
 					robotHeadOrientationROS.w
 				});
+				
+				eyesPosition = OVRInput.Get(OVRInput.RawAxis2D.RThumbstick);
+				motorAngles.Add(eyesPosition[0]);
+				motorAngles.Add(eyesPosition[1]);
 
-			return motorAngles.ToArray();
+			motorMsg.Data.Clear();
+			motorMsg.Data.Add(motorAngles);
+			motorSample.Data = motorMsg;
+	
+			return motorSample;
 		
 		}
 
@@ -548,46 +600,7 @@ public class UnityAnimusClient : MonoBehaviour {
 			}
 		}
 		
-		LeftButton1 = OVRInput.Get(OVRInput.Button.Two);
-		LeftButton2 = OVRInput.Get(OVRInput.Button.One);
-		RightButton1 = OVRInput.Get(OVRInput.Button.Four);
-		RightButton2 = OVRInput.Get(OVRInput.Button.Three);
 		
-		var controlCombination = ((LeftButton1 ? 1 : 0) * 1) + 
-		                         ((LeftButton2 ? 1 : 0) * 2) +
-		                         ((RightButton1 ? 1 : 0) * 4) +
-		                         ((RightButton2 ? 1 : 0) * 8);
-
-		switch (controlCombination)
-		{
-			case 0:
-				// All off
-				currentEmotion = AnimusUtils.EmotionName.neutral.ToString();
-				break;
-			case 1:
-				// Left Button 1
-				currentEmotion = AnimusUtils.EmotionName.angry.ToString();
-				break;
-			case 2:
-				// Left Button 2
-				currentEmotion = AnimusUtils.EmotionName.fear.ToString();
-				break;
-			case 4:
-				// Right Button 1
-				currentEmotion = AnimusUtils.EmotionName.sad.ToString();
-				break;
-			case 8:
-				// Right Button 2
-				currentEmotion = AnimusUtils.EmotionName.happy.ToString();
-				break;
-			case 10:
-				// Right Button 2 and Left Button 2
-				currentEmotion = AnimusUtils.EmotionName.surprised.ToString();
-				break;
-			default:
-				Debug.Log("Unassigned Combination");
-				break;
-		}
 	}
 
 	// --------------------------Voice Modality----------------------------------
@@ -611,22 +624,70 @@ public class UnityAnimusClient : MonoBehaviour {
 	// --------------------------Emotion Modality----------------------------------
 	public bool emotion_initialise()
 	{
+		emotionMsg = new StringSample();
+		emotionSample = new Sample(DataMessage.Types.DataType.String, emotionMsg);
 		return true;
 	}
 
-	public string emotion_get()
+	public Sample emotion_get()
 	{
-		if (!bodyTransitionReady) return null;
-		if (oldEmotion != currentEmotion)
+		
+		LeftButton1 = OVRInput.Get(OVRInput.Button.One);
+		LeftButton2 = OVRInput.Get(OVRInput.Button.Two);
+		RightButton1 = OVRInput.Get(OVRInput.Button.Four);
+		RightButton2 = OVRInput.Get(OVRInput.Button.Three);
+		
+		var controlCombination = ((LeftButton1 ? 1 : 0) * 1) + 
+		                         ((LeftButton2 ? 1 : 0) * 2) +
+		                         ((RightButton1 ? 1 : 0) * 4) +
+		                         ((RightButton2 ? 1 : 0) * 8);
+
+		switch (controlCombination)
 		{
-			Debug.Log(currentEmotion);
-			oldEmotion = currentEmotion;
-			return currentEmotion;
+			case 0:
+				// All off
+				currentEmotion = "off";
+				break;
+			case 1:
+				// Left Button 1
+				currentEmotion = "A";
+				break;
+			case 2:
+				// Left Button 2
+				currentEmotion = "B";
+				break;
+			case 4:
+				// Right Button 1
+				currentEmotion = "X";
+				break;
+			case 8:
+				// Right Button 2
+				currentEmotion = "Y";
+				break;
+			case 10:
+				// Right Button 2 and Left Button 2
+				currentEmotion = "BY";
+				break;
+			default:
+				Debug.Log("Unassigned Combination");
+				break;
 		}
-		else
-		{
-			return null;
-		}
+		
+		
+		emotionMsg.Data = currentEmotion;
+		emotionSample.Data = emotionMsg;
+		return emotionSample;
+// 		if (!bodyTransitionReady) return null;
+// 		if (oldEmotion != currentEmotion)
+// 		{
+// 			Debug.Log(currentEmotion);
+// 			oldEmotion = currentEmotion;
+// 			return currentEmotion;
+// 		}
+// 		else
+// 		{
+// 			return null;
+// 		}
 	}
 
 	public bool emotion_close()
