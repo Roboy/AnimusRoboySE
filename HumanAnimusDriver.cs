@@ -409,7 +409,7 @@ public class UnityAnimusClient : MonoBehaviour {
 			return null;
 		}
 
-		if (Time.time * 1000 - _lastUpdate > 50)
+		if (Time.time * 1000 - _lastUpdate > 200)
 		{
 			var headAngles = humanHead.eulerAngles;
 			var roll = ClipAngle(headAngles.x);
