@@ -269,6 +269,7 @@ public class UnityAnimusClient : MonoBehaviour {
 		{
 			return false;
 		}
+
 		var currSample = currSamples.Samples[0];
 		
 		try
@@ -624,12 +625,14 @@ public class UnityAnimusClient : MonoBehaviour {
 	// --------------------------Emotion Modality----------------------------------
 	public bool emotion_initialise()
 	{
+
 		emotionMsg = new StringSample();
 		emotionSample = new Sample(DataMessage.Types.DataType.String, emotionMsg);
 		return true;
 	}
 
 	public Sample emotion_get()
+
 	{
 		
 		LeftButton1 = OVRInput.Get(OVRInput.Button.One);
@@ -673,10 +676,11 @@ public class UnityAnimusClient : MonoBehaviour {
 				break;
 		}
 		
-		
+
 		emotionMsg.Data = currentEmotion;
 		emotionSample.Data = emotionMsg;
 		return emotionSample;
+
 // 		if (!bodyTransitionReady) return null;
 // 		if (oldEmotion != currentEmotion)
 // 		{
