@@ -257,6 +257,9 @@ public class UnityAnimusClient : MonoBehaviour {
 
 	public bool vision_set(ImageSamples currSamples)
 	{
+	
+	    try
+	    {
 		if (!bodyTransitionReady) return true;
 		
 		if (!visionEnabled)
@@ -272,8 +275,7 @@ public class UnityAnimusClient : MonoBehaviour {
 
 		var currSample = currSamples.Samples[0];
 		
-		try
-		{
+		
 			var currShape = currSample.DataShape;
 			Debug.Log($"{currShape[0]}, {currShape[1]}");
 #if ANIMUS_USE_OPENCV
@@ -293,6 +295,7 @@ public class UnityAnimusClient : MonoBehaviour {
 			{
 				return true;
 			}
+			Debug.Log("cvt Color ops");
 			
 			yuv.put(0, 0, currSample.Data.ToByteArray());
 			
@@ -320,8 +323,9 @@ public class UnityAnimusClient : MonoBehaviour {
 	            // {
 		           //  wrapMode = TextureWrapMode.Clamp
 	            // };
-	            return true;
+// 	            return true;
 	        }
+		Debug.Log("matToTexture2D");
 			
 			//TODO apply stereo images
 	        Utils.matToTexture2D (rgb, _leftTexture);
@@ -332,6 +336,7 @@ public class UnityAnimusClient : MonoBehaviour {
 		{
 			Debug.Log(e);
 		}
+		Debug.Log("done vision set");
 		return true;
 	}
 
