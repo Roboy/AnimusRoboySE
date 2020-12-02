@@ -182,33 +182,6 @@ public class UnityAnimusClient : MonoBehaviour {
 		   webRequest.certificateHandler = new BypassCertificate();
 		   // Request and wait for the desired page.
 		   yield return webRequest.SendWebRequest();
-
-// 		   string[] pages = uri.Split('/');
-// 		   int page = pages.Length - 1;
-
-// 		   if (webRequest.isNetworkError)
-// 		   {
-// 		    Debug.Log(pages[page] + ": Error: " + webRequest.error);
-// 		   }
-// 		   else
-// 		   {
-// 		    Debug.Log(pages[page] + ":\nReceived: " + webRequest.downloadHandler.text);
-// 		   }
-		  }
-		
-// 		UnityWebRequest www = UnityWebRequest.Get("https://lib.roboy.org/teleportal/" + command);
-// 		yield return www.SendWebRequest();
-
-// 		if(www.isNetworkError || www.isHttpError) {
-// 		    Debug.Log(www.error);
-// 		}
-// 		else {
-// 		    // Show results as text
-// 		    Debug.Log(www.downloadHandler.text);
-
-// 		    // Or retrieve results as binary data
-// 		    byte[] results = www.downloadHandler.data;
-// 		}
 	   }
 
 	// --------------------------Vision Modality----------------------------------
@@ -603,6 +576,11 @@ public class UnityAnimusClient : MonoBehaviour {
 // 				{
 // 					trackingRight = false;
 // 				}
+
+				LeftButton1 = OVRInput.Get(OVRInput.Button.One);
+				LeftButton2 = OVRInput.Get(OVRInput.Button.Two);
+				RightButton1 = OVRInput.Get(OVRInput.Button.Four);
+				RightButton2 = OVRInput.Get(OVRInput.Button.Three);
 			}
 		}
 		
@@ -639,12 +617,6 @@ public class UnityAnimusClient : MonoBehaviour {
 	public Sample emotion_get()
 
 	{
-		
-		LeftButton1 = OVRInput.Get(OVRInput.Button.One);
-		LeftButton2 = OVRInput.Get(OVRInput.Button.Two);
-		RightButton1 = OVRInput.Get(OVRInput.Button.Four);
-		RightButton2 = OVRInput.Get(OVRInput.Button.Three);
-		
 		var controlCombination = ((LeftButton1 ? 1 : 0) * 1) + 
 		                         ((LeftButton2 ? 1 : 0) * 2) +
 		                         ((RightButton1 ? 1 : 0) * 4) +
