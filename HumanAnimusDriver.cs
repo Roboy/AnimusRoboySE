@@ -183,6 +183,7 @@ public class UnityAnimusClient : MonoBehaviour {
 		   // Request and wait for the desired page.
 		   yield return webRequest.SendWebRequest();
 	   }
+	}
 
 	// --------------------------Vision Modality----------------------------------
 	public bool vision_initialise()
@@ -250,7 +251,7 @@ public class UnityAnimusClient : MonoBehaviour {
 		
 		
 			var currShape = currSample.DataShape;
-			Debug.Log($"{currShape[0]}, {currShape[1]}");
+			// Debug.Log($"{currShape[0]}, {currShape[1]}");
 #if ANIMUS_USE_OPENCV
 			if (!initMats)
 			{
@@ -268,7 +269,7 @@ public class UnityAnimusClient : MonoBehaviour {
 			{
 				return true;
 			}
-			Debug.Log("cvt Color ops");
+			// Debug.Log("cvt Color ops");
 			
 			yuv.put(0, 0, currSample.Data.ToByteArray());
 			
@@ -298,7 +299,7 @@ public class UnityAnimusClient : MonoBehaviour {
 	            // };
 // 	            return true;
 	        }
-		Debug.Log("matToTexture2D");
+		// Debug.Log("matToTexture2D");
 			
 			//TODO apply stereo images
 	        Utils.matToTexture2D (rgb, _leftTexture);
