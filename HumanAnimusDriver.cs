@@ -310,7 +310,7 @@ public class UnityAnimusClient : MonoBehaviour {
 		{
 			Debug.Log(e);
 		}
-		Debug.Log("done vision set");
+// 		Debug.Log("done vision set");
 		return true;
 	}
 
