@@ -414,7 +414,7 @@ public class UnityAnimusClient : MonoBehaviour {
 			return null;
 		}
 
-		if (Time.time * 1000 - _lastUpdate > 200)
+		if (Time.time * 1000 - _lastUpdate > 50)
 		{
 			var headAngles = humanHead.eulerAngles;
 			var roll = ClipAngle(headAngles.x);
@@ -429,46 +429,46 @@ public class UnityAnimusClient : MonoBehaviour {
 				(float) yaw * Mathf.Deg2Rad,
 			};
 
-// 			if (trackingLeft)
-// 			{
-				motorAngles.Add(OVRInput.Get(OVRInput.RawAxis1D.LIndexTrigger));
-// 				motorAngles.Add(OVRInput.Get(OVRInput.Axis1D.PrimaryHandTrigger, OVRInput.Controller.LTouch));
-				robotLeftHandPositionROS = Vector2Ros(humanLeftHand.position);
-				robotLeftHandOrientationROS = Quaternion2Ros(Quaternion.Euler(humanLeftHand.eulerAngles));
-				motorAngles.AddRange(new List<float>()
-				{
-					robotLeftHandPositionROS.x,
-					robotLeftHandPositionROS.y,
-					robotLeftHandPositionROS.z,
-					robotLeftHandOrientationROS.x,
-					robotLeftHandOrientationROS.y,
-					robotLeftHandOrientationROS.z,
-					robotLeftHandOrientationROS.w
-					// Add other robot angles here
-					// leftHandClosed
-				});
-// 			} else {
+// // 			if (trackingLeft)
+// // 			{
+// 				motorAngles.Add(OVRInput.Get(OVRInput.RawAxis1D.LIndexTrigger));
+// // 				motorAngles.Add(OVRInput.Get(OVRInput.Axis1D.PrimaryHandTrigger, OVRInput.Controller.LTouch));
+// 				robotLeftHandPositionROS = Vector2Ros(humanLeftHand.position);
+// 				robotLeftHandOrientationROS = Quaternion2Ros(Quaternion.Euler(humanLeftHand.eulerAngles));
+// 				motorAngles.AddRange(new List<float>()
+// 				{
+// 					robotLeftHandPositionROS.x,
+// 					robotLeftHandPositionROS.y,
+// 					robotLeftHandPositionROS.z,
+// 					robotLeftHandOrientationROS.x,
+// 					robotLeftHandOrientationROS.y,
+// 					robotLeftHandOrientationROS.z,
+// 					robotLeftHandOrientationROS.w
+// 					// Add other robot angles here
+// 					// leftHandClosed
+// 				});
+// // 			} else {
 				
-// 				motorAngles.Add(0.0f);
-// 				motorAngles.AddRange( new List<float>(){0.0f,0.0f,0.0f,0.0f,0.0f,0.0f,0.0f});
-// 			}
+// // 				motorAngles.Add(0.0f);
+// // 				motorAngles.AddRange( new List<float>(){0.0f,0.0f,0.0f,0.0f,0.0f,0.0f,0.0f});
+// // 			}
 
-// 			if (trackingRight)
-// 			{
-				motorAngles.Add(OVRInput.Get(OVRInput.RawAxis1D.RIndexTrigger));
-// 				motorAngles.Add(OVRInput.Get(OVRInput.Axis1D.PrimaryHandTrigger, OVRInput.Controller.RTouch));
-				robotRightHandPositionROS = Vector2Ros(humanRightHand.position);
-				robotRightHandOrientationROS = Quaternion2Ros(Quaternion.Euler(humanRightHand.eulerAngles));
-				motorAngles.AddRange(new List<float>()
-				{
-					robotRightHandPositionROS.x,
-					robotRightHandPositionROS.y,
-					robotRightHandPositionROS.z,
-					robotRightHandOrientationROS.x,
-					robotRightHandOrientationROS.y,
-					robotRightHandOrientationROS.z,
-					robotRightHandOrientationROS.w
-				});
+// // 			if (trackingRight)
+// // 			{
+// 				motorAngles.Add(OVRInput.Get(OVRInput.RawAxis1D.RIndexTrigger));
+// // 				motorAngles.Add(OVRInput.Get(OVRInput.Axis1D.PrimaryHandTrigger, OVRInput.Controller.RTouch));
+// 				robotRightHandPositionROS = Vector2Ros(humanRightHand.position);
+// 				robotRightHandOrientationROS = Quaternion2Ros(Quaternion.Euler(humanRightHand.eulerAngles));
+// 				motorAngles.AddRange(new List<float>()
+// 				{
+// 					robotRightHandPositionROS.x,
+// 					robotRightHandPositionROS.y,
+// 					robotRightHandPositionROS.z,
+// 					robotRightHandOrientationROS.x,
+// 					robotRightHandOrientationROS.y,
+// 					robotRightHandOrientationROS.z,
+// 					robotRightHandOrientationROS.w
+// 				});
 				
 				
 // 			} else {
@@ -476,23 +476,23 @@ public class UnityAnimusClient : MonoBehaviour {
 // 				motorAngles.AddRange( new List<float>(){0.0f,0.0f,0.0f,0.0f,0.0f,0.0f,0.0f});
 // 			}
 			
-				motorAngles.Add(1.0f);
-				robotHeadPositionROS = Vector2Ros(humanHead.position);
-				robotHeadOrientationROS = Quaternion2Ros(Quaternion.Euler(humanHead.eulerAngles));
-				motorAngles.AddRange(new List<float>()
-				{
-					robotHeadPositionROS.x,
-					robotHeadPositionROS.y,
-					robotHeadPositionROS.z,
-					robotHeadOrientationROS.x,
-					robotHeadOrientationROS.y,
-					robotHeadOrientationROS.z,
-					robotHeadOrientationROS.w
-				});
+// 				motorAngles.Add(1.0f);
+// 				robotHeadPositionROS = Vector2Ros(humanHead.position);
+// 				robotHeadOrientationROS = Quaternion2Ros(Quaternion.Euler(humanHead.eulerAngles));
+// 				motorAngles.AddRange(new List<float>()
+// 				{
+// 					robotHeadPositionROS.x,
+// 					robotHeadPositionROS.y,
+// 					robotHeadPositionROS.z,
+// 					robotHeadOrientationROS.x,
+// 					robotHeadOrientationROS.y,
+// 					robotHeadOrientationROS.z,
+// 					robotHeadOrientationROS.w
+// 				});
 				
-				eyesPosition = OVRInput.Get(OVRInput.RawAxis2D.RThumbstick);
-				motorAngles.Add(eyesPosition[0]);
-				motorAngles.Add(eyesPosition[1]);
+// 				eyesPosition = OVRInput.Get(OVRInput.RawAxis2D.RThumbstick);
+// 				motorAngles.Add(eyesPosition[0]);
+// 				motorAngles.Add(eyesPosition[1]);
 
 			motorMsg.Data.Clear();
 			motorMsg.Data.Add(motorAngles);
