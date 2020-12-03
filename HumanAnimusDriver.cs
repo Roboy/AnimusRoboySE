@@ -543,11 +543,21 @@ public class UnityAnimusClient : MonoBehaviour {
 		StartCoroutine(SendLEDCommand(LEDS_OFF));
 		return true;
 	}
+	
+	private void FixedUpdate()
+	{
+		LeftButton1 = OVRInput.GetDown(OVRInput.Button.One);
+		LeftButton2 = OVRInput.GetDown(OVRInput.Button.Two);
+		RightButton1 = OVRInput.GetDown(OVRInput.Button.Four);
+		RightButton2 = OVRInput.GetDown(OVRInput.Button.Three);
+	}
 
 	private void Update()
 	{
 		if (motorEnabled && bodyTransitionReady)
 		{
+			
+			
 			// move robot wherever human goes
 			bodyToBaseOffset = robotBase.position - robotBody.transform.position;
 			robotBody.transform.position = humanHead.position - bodyToBaseOffset;
@@ -616,10 +626,7 @@ public class UnityAnimusClient : MonoBehaviour {
 
 	{
 	
-		LeftButton1 = OVRInput.Get(OVRInput.Button.One);
-		LeftButton2 = OVRInput.Get(OVRInput.Button.Two);
-		RightButton1 = OVRInput.Get(OVRInput.Button.Four);
-		RightButton2 = OVRInput.Get(OVRInput.Button.Three);
+		
 		var controlCombination = ((LeftButton1 ? 1 : 0) * 1) + 
 		                         ((LeftButton2 ? 1 : 0) * 2) +
 		                         ((RightButton1 ? 1 : 0) * 4) +
@@ -658,6 +665,7 @@ public class UnityAnimusClient : MonoBehaviour {
 		
 
 		emotionMsg.Data = currentEmotion;
+		Debug.Log(currentEmotion);
 		emotionSample.Data = emotionMsg;
 		return emotionSample;
 
