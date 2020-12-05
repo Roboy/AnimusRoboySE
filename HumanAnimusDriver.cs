@@ -446,6 +446,7 @@ public class UnityAnimusClient : MonoBehaviour {
 				
 				
 // 			} else {
+				if (RightButton1) motorAngles.Add(2000.0f);
 // 				motorAngles.Add(0.0f);
 // 				motorAngles.AddRange( new List<float>(){0.0f,0.0f,0.0f,0.0f,0.0f,0.0f,0.0f});
 // 			}
@@ -625,61 +626,61 @@ public class UnityAnimusClient : MonoBehaviour {
 	public Sample emotion_get()
 
 	{
-	
+		return null;
 		
-		var controlCombination = ((LeftButton1 ? 1 : 0) * 1) + 
-		                         ((LeftButton2 ? 1 : 0) * 2) +
-		                         ((RightButton1 ? 1 : 0) * 4) +
-		                         ((RightButton2 ? 1 : 0) * 8);
+// 		var controlCombination = ((LeftButton1 ? 1 : 0) * 1) + 
+// 		                         ((LeftButton2 ? 1 : 0) * 2) +
+// 		                         ((RightButton1 ? 1 : 0) * 4) +
+// 		                         ((RightButton2 ? 1 : 0) * 8);
 
-		switch (controlCombination)
-		{
-			case 0:
-				// All off
-				currentEmotion = "off";
-				break;
-			case 1:
-				// Left Button 1
-				currentEmotion = "A";
-				break;
-			case 2:
-				// Left Button 2
-				currentEmotion = "B";
-				break;
-			case 4:
-				// Right Button 1
-				currentEmotion = "X";
-				break;
-			case 8:
-				// Right Button 2
-				currentEmotion = "Y";
-				break;
-			case 10:
-				// Right Button 2 and Left Button 2
-				currentEmotion = "BY";
-				break;
-			default:
-				Debug.Log("Unassigned Combination");
-				break;
-		}
+// 		switch (controlCombination)
+// 		{
+// 			case 0:
+// 				// All off
+// 				currentEmotion = "off";
+// 				break;
+// 			case 1:
+// 				// Left Button 1
+// 				currentEmotion = "A";
+// 				break;
+// 			case 2:
+// 				// Left Button 2
+// 				currentEmotion = "B";
+// 				break;
+// 			case 4:
+// 				// Right Button 1
+// 				currentEmotion = "X";
+// 				break;
+// 			case 8:
+// 				// Right Button 2
+// 				currentEmotion = "Y";
+// 				break;
+// 			case 10:
+// 				// Right Button 2 and Left Button 2
+// 				currentEmotion = "BY";
+// 				break;
+// 			default:
+// 				Debug.Log("Unassigned Combination");
+// 				break;
+// 		}
 		
 
-		emotionMsg.Data = currentEmotion;
-		Debug.Log(currentEmotion);
-		emotionSample.Data = emotionMsg;
-		return emotionSample;
+// 		emotionMsg.Data = currentEmotion;
+// 		Debug.Log(currentEmotion);
+// 		emotionSample.Data = emotionMsg;
+// 		return emotionSample;
 
-// 		if (!bodyTransitionReady) return null;
-// 		if (oldEmotion != currentEmotion)
-// 		{
-// 			Debug.Log(currentEmotion);
-// 			oldEmotion = currentEmotion;
-// 			return currentEmotion;
-// 		}
-// 		else
-// 		{
-// 			return null;
-// 		}
+// // 		if (!bodyTransitionReady) return null;
+// // 		if (oldEmotion != currentEmotion)
+// // 		{
+// // 			Debug.Log(currentEmotion);
+// // 			oldEmotion = currentEmotion;
+// // 			return currentEmotion;
+// // 		}
+// // 		else
+// // 		{
+// // 			return null;
+// // 		}
 	}
 
 	public bool emotion_close()
