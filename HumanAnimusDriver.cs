@@ -73,7 +73,7 @@ public class UnityAnimusClient : MonoBehaviour {
 	public float RotationDeadzone;
 	private float humanRightHandOpen;
 	private float humanLeftHandOpen;
-	private Vector2 eyesPosition;
+	private Vector2 eyesPosition, LThumbstick, RThumbstick;
 	private bool trackingRight;
 	private bool trackingLeft;
 	
@@ -446,7 +446,7 @@ public class UnityAnimusClient : MonoBehaviour {
 				
 				
 // 			} else {
-				if (RightButton1) motorAngles.Add(2000.0f);
+// 				if (RightButton1) motorAngles.Add(2000.0f);
 // 				motorAngles.Add(0.0f);
 // 				motorAngles.AddRange( new List<float>(){0.0f,0.0f,0.0f,0.0f,0.0f,0.0f,0.0f});
 // 			}
@@ -465,9 +465,15 @@ public class UnityAnimusClient : MonoBehaviour {
 // 					robotHeadOrientationROS.w
 // 				});
 				
-// 				eyesPosition = OVRInput.Get(OVRInput.RawAxis2D.RThumbstick);
-// 				motorAngles.Add(eyesPosition[0]);
-// 				motorAngles.Add(eyesPosition[1]);
+				RThumbstick = OVRInput.Get(OVRInput.RawAxis2D.RThumbstick);
+				motorAngles.Add(RThumbstick[0]);
+				motorAngles.Add(RThumbstick[1]);
+				
+				LThumbstick = OVRInput.Get(OVRInput.RawAxis2D.LThumbstick);
+				motorAngles.Add(LThumbstick[0]);
+				motorAngles.Add(LThumbstick[1]);
+				
+				
 
 			motorMsg.Data.Clear();
 			motorMsg.Data.Add(motorAngles);
