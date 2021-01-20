@@ -114,6 +114,8 @@ public class UnityAnimusClient : MonoBehaviour {
 	private const string LEDS_CONNECTED = "robot_established";
 	private const string LEDS_IS_CONNECTED = "if_connected";
 	
+	private bool firstUpdate, lastUpdate;
+	
 	public void Start()
 	{
 		motorEnabled = false;
@@ -124,6 +126,8 @@ public class UnityAnimusClient : MonoBehaviour {
 		bodyTransitionReady = false;
 		StartCoroutine(SendLEDCommand(LEDS_CONNECTING));
 		StartCoroutine(StartBodyTransition());
+		firstUpdate = true;
+		lastUpdate = false;
 	}
 	
 
@@ -563,8 +567,6 @@ public class UnityAnimusClient : MonoBehaviour {
 	{
 		if (motorEnabled && bodyTransitionReady)
 		{
-			
-			
 			// move robot wherever human goes
 			bodyToBaseOffset = robotBase.position - robotBody.transform.position;
 			robotBody.transform.position = humanHead.position - bodyToBaseOffset;
@@ -632,7 +634,20 @@ public class UnityAnimusClient : MonoBehaviour {
 	public Sample emotion_get()
 
 	{
-		return null;
+		if (firstUpdate) {
+			emotionMsg.Data = "tp_on";
+			firstUpdate = false;
+		}
+		else if (lastUpdate) {
+			emotionMsg.Data = "tp_off";
+			lastUpdate = false;
+		}
+		else {
+			emotionMsg.Data = "neutral";
+		}
+		
+		emotionSample.Data = emotionMsg;
+		return emotionSample;
 		
 // 		var controlCombination = ((LeftButton1 ? 1 : 0) * 1) + 
 // 		                         ((LeftButton2 ? 1 : 0) * 2) +
@@ -676,21 +691,23 @@ public class UnityAnimusClient : MonoBehaviour {
 // 		emotionSample.Data = emotionMsg;
 // 		return emotionSample;
 
-// // 		if (!bodyTransitionReady) return null;
-// // 		if (oldEmotion != currentEmotion)
-// // 		{
-// // 			Debug.Log(currentEmotion);
-// // 			oldEmotion = currentEmotion;
-// // 			return currentEmotion;
-// // 		}
-// // 		else
-// // 		{
-// // 			return null;
-// // 		}
+// 		if (!bodyTransitionReady) return null;
+// 		if (oldEmotion != currentEmotion)
+// 		{
+// 			Debug.Log(currentEmotion);
+// 			oldEmotion = currentEmotion;
+// 			return currentEmotion;
+// 		}
+// 		else
+// 		{
+// 			return null;
+// 		}
 	}
 
 	public bool emotion_close()
 	{
+		lastUpdate = true;
+		emotion_get();
 		return true;
 	}
 
