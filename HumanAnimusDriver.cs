@@ -706,8 +706,8 @@ public class UnityAnimusClient : MonoBehaviour {
 
 	public bool emotion_close()
 	{
-		lastUpdate = true;
-		emotion_get();
+// 		lastUpdate = true;
+// 		emotion_get();
 		return true;
 	}
 
