@@ -634,62 +634,52 @@ public class UnityAnimusClient : MonoBehaviour {
 	public Sample emotion_get()
 
 	{
-		if (firstUpdate) {
-			emotionMsg.Data = "tp_on";
-			firstUpdate = false;
-		}
-		else if (lastUpdate) {
-			emotionMsg.Data = "tp_off";
-			lastUpdate = false;
-		}
-		else {
-			emotionMsg.Data = "neutral";
+		
+		var controlCombination = ((LeftButton1 ? 1 : 0) * 1) + 
+		                         ((LeftButton2 ? 1 : 0) * 2) +
+		                         ((RightButton1 ? 1 : 0) * 4) +
+		                         ((RightButton2 ? 1 : 0) * 8);
+
+		switch (controlCombination)
+		{
+			case 0:
+				// All off
+				currentEmotion = "off";
+				break;
+			case 1:
+				// Left Button 1
+				currentEmotion = "A";
+				break;
+			case 2:
+				// Left Button 2
+				currentEmotion = "B";
+				break;
+			case 4:
+				// Right Button 1
+				currentEmotion = "X";
+				break;
+			case 5:
+				// Right button 1 and left button 1
+				currentEmotion = "AX";
+				break;
+			case 8:
+				// Right Button 2
+				currentEmotion = "Y";
+				break;
+			case 10:
+				// Right Button 2 and Left Button 2
+				currentEmotion = "BY";
+				break;
+			default:
+				Debug.Log("Unassigned Combination");
+				break;
 		}
 		
+
+		emotionMsg.Data = currentEmotion;
+		Debug.Log(currentEmotion);
 		emotionSample.Data = emotionMsg;
 		return emotionSample;
-		
-// 		var controlCombination = ((LeftButton1 ? 1 : 0) * 1) + 
-// 		                         ((LeftButton2 ? 1 : 0) * 2) +
-// 		                         ((RightButton1 ? 1 : 0) * 4) +
-// 		                         ((RightButton2 ? 1 : 0) * 8);
-
-// 		switch (controlCombination)
-// 		{
-// 			case 0:
-// 				// All off
-// 				currentEmotion = "off";
-// 				break;
-// 			case 1:
-// 				// Left Button 1
-// 				currentEmotion = "A";
-// 				break;
-// 			case 2:
-// 				// Left Button 2
-// 				currentEmotion = "B";
-// 				break;
-// 			case 4:
-// 				// Right Button 1
-// 				currentEmotion = "X";
-// 				break;
-// 			case 8:
-// 				// Right Button 2
-// 				currentEmotion = "Y";
-// 				break;
-// 			case 10:
-// 				// Right Button 2 and Left Button 2
-// 				currentEmotion = "BY";
-// 				break;
-// 			default:
-// 				Debug.Log("Unassigned Combination");
-// 				break;
-// 		}
-		
-
-// 		emotionMsg.Data = currentEmotion;
-// 		Debug.Log(currentEmotion);
-// 		emotionSample.Data = emotionMsg;
-// 		return emotionSample;
 
 // 		if (!bodyTransitionReady) return null;
 // 		if (oldEmotion != currentEmotion)
