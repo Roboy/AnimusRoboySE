@@ -656,19 +656,25 @@ public class UnityAnimusClient : MonoBehaviour {
 				break;
 			case 4:
 				// Right Button 1
-				currentEmotion = "X";
+				currentEmotion = "Y";
 				break;
 			case 5:
 				// Right button 1 and left button 1
-				currentEmotion = "AX";
+				currentEmotion = "AY";
+				break;
+			case 6:
+				currentEmotion = "BY";
 				break;
 			case 8:
 				// Right Button 2
-				currentEmotion = "Y";
+				currentEmotion = "X";
+				break;
+			case 9:
+				currentEmotion = "AX";
 				break;
 			case 10:
 				// Right Button 2 and Left Button 2
-				currentEmotion = "BY";
+				currentEmotion = "BX";
 				break;
 			default:
 				Debug.Log("Unassigned Combination");
