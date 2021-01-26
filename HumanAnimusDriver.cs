@@ -557,10 +557,10 @@ public class UnityAnimusClient : MonoBehaviour {
 	
 	private void FixedUpdate()
 	{
-		LeftButton1 = OVRInput.GetDown(OVRInput.Button.One);
-		LeftButton2 = OVRInput.GetDown(OVRInput.Button.Two);
-		RightButton1 = OVRInput.GetDown(OVRInput.Button.Four);
-		RightButton2 = OVRInput.GetDown(OVRInput.Button.Three);
+		LeftButton1 = OVRInput.GetDown(OVRInput.Button.One) || OVRInput.GetUp(OVRInput.Button.One);
+		LeftButton2 = OVRInput.GetDown(OVRInput.Button.Two) || OVRInput.GetUp(OVRInput.Button.Two);
+		RightButton1 = OVRInput.GetDown(OVRInput.Button.Four) || OVRInput.GetUp(OVRInput.Button.Four);
+		RightButton2 = OVRInput.GetDown(OVRInput.Button.Three) || OVRInput.GetUp(OVRInput.Button.Three);
 	}
 
 	private void Update()
