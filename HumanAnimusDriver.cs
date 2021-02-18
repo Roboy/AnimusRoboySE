@@ -27,12 +27,12 @@ public class BypassCertificate : CertificateHandler
  }
 
 public class UnityAnimusClient : MonoBehaviour {
-	
+
 	public GameObject OVRRig;
 	public Transform TrackingSpace;
 	public GameObject robotBody;
 	public Robot chosenDetails;
-	
+
 	// vision variables
 	public GameObject LeftEye;
 	public GameObject RightEye;
@@ -50,7 +50,7 @@ public class UnityAnimusClient : MonoBehaviour {
 	private Mat yuv;
 	private Mat rgb;
 #endif
-	
+
 	private bool initMats;
 
 	// motor variables
@@ -76,29 +76,29 @@ public class UnityAnimusClient : MonoBehaviour {
 	private Vector2 eyesPosition, LThumbstick, RThumbstick;
 	private bool trackingRight;
 	private bool trackingLeft;
-	
+
 	public NaoAnimusDriver robotDriver;
 	private BioIK.BioIK _myIKBody;
 	private List<BioSegment> _actuatedJoints;
 	private bool motorEnabled;
 	private float _lastUpdate;
-	
+
 	private bool bodyTransitionReady;
 	private int bodyTransitionDuration = 1;
-	
+
 	private Animus.Data.Float32Array motorMsg;
 	private Sample motorSample;
-	
+
 	// audition variables
 	private bool auditionEnabled;
 	// public GameObject Audio;
 	// private AudioSetter _audioSetter;
-	
+
 	// voice variables
 	// public GameObject Voice;
 	private bool voiceEnabled;
 	// private VoiceSampler _voiceSampler;
-	
+
 	// emotion variables
 	public bool LeftButton1;
 	public bool LeftButton2;
@@ -108,14 +108,14 @@ public class UnityAnimusClient : MonoBehaviour {
 	public string oldEmotion;
 	private Animus.Data.StringSample emotionMsg;
 	private Sample emotionSample;
-	
+
 	private const string LEDS_OFF = "off";
-	private const string LEDS_CONNECTING = "robot_connecting";	
+	private const string LEDS_CONNECTING = "robot_connecting";
 	private const string LEDS_CONNECTED = "robot_established";
 	private const string LEDS_IS_CONNECTED = "if_connected";
-	
+
 	private bool firstUpdate, lastUpdate;
-	
+
 	public void Start()
 	{
 		motorEnabled = false;
@@ -124,12 +124,15 @@ public class UnityAnimusClient : MonoBehaviour {
 		voiceEnabled = false;
 		initMats = false;
 		bodyTransitionReady = false;
+
+    // controls an led ring (optional)
 		StartCoroutine(SendLEDCommand(LEDS_CONNECTING));
 		StartCoroutine(StartBodyTransition());
-		firstUpdate = true;
+
+    firstUpdate = true;
 		lastUpdate = false;
 	}
-	
+
 
 	IEnumerator StartBodyTransition()
 	{
@@ -137,32 +140,32 @@ public class UnityAnimusClient : MonoBehaviour {
 		robotBody.transform.eulerAngles = new Vector3(0, -180, 0);
 		//
 		yield return null;
-		TrackingSpace = OVRRig.transform.Find("TrackingSpace");
+		// TrackingSpace = OVRRig.transform.Find("TrackingSpace");
 		humanHead = TrackingSpace.Find("CenterEyeAnchor");
 		humanLeftHand = TrackingSpace.Find("LeftHandAnchor");
 		humanRightHand = TrackingSpace.Find("RightHandAnchor");
 		LeftEye = this.transform.Find("LeftEye").gameObject;
 		RightEye = this.transform.Find("RightEye").gameObject;
-		
-		robotDriver = robotBody.GetComponent<NaoAnimusDriver>();
-		if (robotDriver != null)
-		{
-			robotBase = robotDriver.topCamera.gameObject.transform.parent.transform;
-			robotLeftHandObjective = robotDriver.leftHandTarget.transform;
-			robotRightHandObjective = robotDriver.rightHandTarget.transform;
-			bodyToBaseOffset = robotBase.position - robotBody.transform.position;
-		}
-		else
-		{
-			robotBase = robotBody.transform;
-			bodyToBaseOffset = Vector3.zero;
-		}
 
-		var roboTransform = robotBody.transform;
-		Vector3 startPos = roboTransform.position;
-		Vector3 endPos = humanHead.position - bodyToBaseOffset;
-		Vector3 startAngles = roboTransform.eulerAngles;
-		
+		// robotDriver = robotBody.GetComponent<NaoAnimusDriver>();
+		// if (robotDriver != null)
+		// {
+		// 	robotBase = robotDriver.topCamera.gameObject.transform.parent.transform;
+		// 	robotLeftHandObjective = robotDriver.leftHandTarget.transform;
+		// 	robotRightHandObjective = robotDriver.rightHandTarget.transform;
+		// 	bodyToBaseOffset = robotBase.position - robotBody.transform.position;
+		// }
+		// else
+		// {
+		// 	robotBase = robotBody.transform;
+		// 	bodyToBaseOffset = Vector3.zero;
+		// }
+
+		// var roboTransform = robotBody.transform;
+		// Vector3 startPos = roboTransform.position;
+		// Vector3 endPos = humanHead.position - bodyToBaseOffset;
+		// Vector3 startAngles = roboTransform.eulerAngles;
+
 // 		for (float t = 0.0f; t < 1.0f; t += Time.deltaTime / bodyTransitionDuration)
 // 		{
 // 			bodyToBaseOffset = robotBase.position - robotBody.transform.position;
@@ -170,16 +173,16 @@ public class UnityAnimusClient : MonoBehaviour {
 // 			roboTransform.position = new Vector3(Mathf.SmoothStep(startPos.x, endPos.x, t),
 // 												 Mathf.SmoothStep(startPos.y, endPos.y, t),
 // 												 Mathf.SmoothStep(startPos.z, endPos.z, t));
-			
+
 // 			roboTransform.eulerAngles = new Vector3(Mathf.SmoothStep(startAngles.x, 0, t),
 // 													Mathf.SmoothStep(startAngles.y, 0, t),
 // 													Mathf.SmoothStep(startAngles.z, 0, t));
 // 			yield return null;
 // 		}
-		
+
 		bodyTransitionReady = true;
 	}
-	
+
 	 IEnumerator SendLEDCommand(string command) {
 	 	 using (UnityWebRequest webRequest = UnityWebRequest.Get("https://lib.roboy.org/teleportal/" + command))
 		  {
@@ -194,7 +197,7 @@ public class UnityAnimusClient : MonoBehaviour {
 	{
 		//Get OVR Cameras
 		var cameras = OVRRig.GetComponentsInChildren<Camera>();
-		
+
 		// Setup ovr camera parameters and attach component transforms to ovr camera transforms
 		// This allows the planes to follow the cameras
 		foreach (Camera cam in cameras)
@@ -227,7 +230,7 @@ public class UnityAnimusClient : MonoBehaviour {
 		_rightRenderer = _rightPlane.GetComponent<Renderer>();
 		_imageDims = new RepeatedField<uint>();
 		visionEnabled = true;
-		
+
 		// Comment the line below to enable two images - Not tested
 		RightEye.SetActive(false);
 		return visionEnabled;
@@ -235,11 +238,11 @@ public class UnityAnimusClient : MonoBehaviour {
 
 	public bool vision_set(ImageSamples currSamples)
 	{
-	
+
 	    try
 	    {
 		if (!bodyTransitionReady) return true;
-		
+
 		if (!visionEnabled)
 		{
 			Debug.Log("Vision modality not enabled. Cannot set");
@@ -252,8 +255,8 @@ public class UnityAnimusClient : MonoBehaviour {
 		}
 
 		var currSample = currSamples.Samples[0];
-		
-		
+
+
 			var currShape = currSample.DataShape;
 			// Debug.Log($"{currShape[0]}, {currShape[1]}");
 #if ANIMUS_USE_OPENCV
@@ -263,30 +266,30 @@ public class UnityAnimusClient : MonoBehaviour {
 				rgb = new Mat();
 				initMats = true;
 			}
-			
+
 			if (currSample.Data.Length != currShape[0] * currShape[1] * 1.5)
 			{
 				return true;
 			}
-			
+
 			if (currShape[0] <= 100 || currShape[1] <= 100)
 			{
 				return true;
 			}
 			// Debug.Log("cvt Color ops");
-			
+
 			yuv.put(0, 0, currSample.Data.ToByteArray());
-			
+
 			Imgproc.cvtColor(yuv, rgb, Imgproc.COLOR_YUV2BGR_I420);
-			
+
 			if (_imageDims.Count == 0 || currShape[0] != _imageDims[0] || currShape[1] != _imageDims[1] || currShape[2] != _imageDims[2])
 	        {
 		        _imageDims = currShape;
 		        var scaleX = (float) _imageDims[0] / (float) _imageDims[1];
-		        
+
 		        Debug.Log("Resize triggered. Setting texture resolution to " + currShape[0] + "x" + currShape[1]);
 	            Debug.Log("Setting horizontal scale to " + scaleX +  " " + (float)_imageDims[0] + " " + (float)_imageDims[1]);
-	            
+
 	            UnityEngine.Vector3 currentScale = _leftPlane.transform.localScale;
 	            currentScale.x =  scaleX;
 
@@ -295,7 +298,7 @@ public class UnityAnimusClient : MonoBehaviour {
 	            {
 	                wrapMode = TextureWrapMode.Clamp
 	            };
-	            
+
 	            // _rightPlane.transform.localScale = currentScale;
 	            // _rightTexture = new Texture2D(rgb.width(), rgb.height(), TextureFormat.ARGB32, false)
 	            // {
@@ -304,7 +307,7 @@ public class UnityAnimusClient : MonoBehaviour {
 // 	            return true;
 	        }
 		// Debug.Log("matToTexture2D");
-			
+
 			//TODO apply stereo images
 	        Utils.matToTexture2D (rgb, _leftTexture);
 	        _leftRenderer.material.mainTexture = _leftTexture;
@@ -325,12 +328,12 @@ public class UnityAnimusClient : MonoBehaviour {
 			Debug.Log("Vision modality not enabled. Cannot close");
 			return false;
 		}
-		
+
 		visionEnabled = false;
 		return true;
 	}
-	
-	
+
+
 	// --------------------------Audition Modality----------------------------------
 	public bool audition_initialise()
 	{
@@ -348,7 +351,7 @@ public class UnityAnimusClient : MonoBehaviour {
 		auditionEnabled = false;
 		return true;
 	}
-	
+
 	// --------------------------Proprioception Modality----------------------------------
 	public bool proprioception_initialise()
 	{
@@ -357,12 +360,12 @@ public class UnityAnimusClient : MonoBehaviour {
 
 	public bool proprioception_set(float[] currSample)
 	{
-		if (currSample.Length > 2) {
-// 			if (currSample[0]>0) {
-			OVRInput.SetControllerVibration(currSample[0], currSample[1], OVRInput.Controller.LTouch);
-// 			}
-		}
-		
+// 		if (currSample.Length > 2) {
+// // 			if (currSample[0]>0) {
+// 			OVRInput.SetControllerVibration(currSample[0], currSample[1], OVRInput.Controller.LTouch);
+// // 			}
+// 		}
+
 		return true;
 	}
 
@@ -370,7 +373,7 @@ public class UnityAnimusClient : MonoBehaviour {
 	{
 		return true;
 	}
-	
+
 	// --------------------------Motor Modality-------------------------------------
 	public bool motor_initialise()
 	{
@@ -383,6 +386,11 @@ public class UnityAnimusClient : MonoBehaviour {
 		return true;
 	}
 
+ // reads orientation of the headset
+ // reads pose of each Controller
+ // reads trigger values
+ // packs this data in correct order
+ // sends to animus server
 	public Sample motor_get()
 	{
 		if (!bodyTransitionReady) return null;
@@ -398,7 +406,7 @@ public class UnityAnimusClient : MonoBehaviour {
 			var roll = ClipAngle(headAngles.x);
 			var pitch = ClipAngle(-headAngles.y);
 			var yaw = ClipAngle(headAngles.z);
-			
+
 			var motorAngles = new List<float>
 			{
 				0, 0,
@@ -426,7 +434,7 @@ public class UnityAnimusClient : MonoBehaviour {
 					// leftHandClosed
 				});
 // // 			} else {
-				
+
 // // 				motorAngles.Add(0.0f);
 // // 				motorAngles.AddRange( new List<float>(){0.0f,0.0f,0.0f,0.0f,0.0f,0.0f,0.0f});
 // // 			}
@@ -447,14 +455,14 @@ public class UnityAnimusClient : MonoBehaviour {
 					robotRightHandOrientationROS.z,
 					robotRightHandOrientationROS.w
 				});
-				
-				
+
+
 // 			} else {
 // 				if (RightButton1) motorAngles.Add(2000.0f);
 // 				motorAngles.Add(0.0f);
 // 				motorAngles.AddRange( new List<float>(){0.0f,0.0f,0.0f,0.0f,0.0f,0.0f,0.0f});
 // 			}
-			
+
 // 				motorAngles.Add(1.0f);
 // 				robotHeadPositionROS = Vector2Ros(humanHead.position);
 // 				robotHeadOrientationROS = Quaternion2Ros(Quaternion.Euler(humanHead.eulerAngles));
@@ -468,27 +476,27 @@ public class UnityAnimusClient : MonoBehaviour {
 // 					robotHeadOrientationROS.z,
 // 					robotHeadOrientationROS.w
 // 				});
-				// 
+				//
 				RThumbstick = OVRInput.Get(OVRInput.RawAxis2D.RThumbstick);
 				motorAngles.Add(RThumbstick[0]);
 				motorAngles.Add(RThumbstick[1]);
-				
+
 				LThumbstick = OVRInput.Get(OVRInput.RawAxis2D.LThumbstick);
 				motorAngles.Add(LThumbstick[0]);
 				motorAngles.Add(LThumbstick[1]);
-				
-				
+
+
 
 			motorMsg.Data.Clear();
 			motorMsg.Data.Add(motorAngles);
 			motorSample.Data = motorMsg;
-	
+
 			return motorSample;
-		
+
 		}
 
 		return null;
-		
+
 		// var headAngles = humanHead.eulerAngles;
 		// for (var i = 0; i < 3; i++)
 		// {
@@ -497,24 +505,24 @@ public class UnityAnimusClient : MonoBehaviour {
 		// 		headAngles[i] -= 360;
 		// 	}
 		// }
-		
+
 		// // Primary is always left and Secondary is right
 		// var rightJoystick = OVRInput.Get(OVRInput.Axis2D.PrimaryThumbstick, OVRInput.Controller.RTouch);
 		// var leftJoystick = OVRInput.Get(OVRInput.Axis2D.PrimaryThumbstick, OVRInput.Controller.LTouch);
-		
-		
+
+
 		// //Use y value for X vel and Y value for X vel
 		// var currLocomotion = new Vector3(leftJoystick.y, -leftJoystick.x, -rightJoystick.x);
 		// var leftHandClosed = OVRInput.Get(OVRInput.Axis1D.PrimaryHandTrigger, OVRInput.Controller.LTouch);
 		// var rightHandClosed = OVRInput.Get(OVRInput.Axis1D.PrimaryHandTrigger, OVRInput.Controller.RTouch);
-		
+
 		// // Assemble float array. This is specific to each robot for now. But with BioIK on the robot side can be generalised
 		// var motorAngles = new List<float>
 		// {
 		// 	-headAngles.y,
 		// 	headAngles.x,
 		// 	headAngles.z,
-		// 	currLocomotion.x, 
+		// 	currLocomotion.x,
 		// 	currLocomotion.y,
 		// 	currLocomotion.z,
 		// 	-1.0f,
@@ -554,7 +562,8 @@ public class UnityAnimusClient : MonoBehaviour {
 		StartCoroutine(SendLEDCommand(LEDS_OFF));
 		return true;
 	}
-	
+
+ // read button values used in emotion callback
 	private void FixedUpdate()
 	{
 		LeftButton1 = OVRInput.GetDown(OVRInput.Button.One) || OVRInput.GetUp(OVRInput.Button.One);
@@ -568,15 +577,15 @@ public class UnityAnimusClient : MonoBehaviour {
 		if (motorEnabled && bodyTransitionReady)
 		{
 			// move robot wherever human goes
-			bodyToBaseOffset = robotBase.position - robotBody.transform.position;
-			robotBody.transform.position = humanHead.position - bodyToBaseOffset;
+			// bodyToBaseOffset = robotBase.position - robotBody.transform.position;
+			// robotBody.transform.position = humanHead.position - bodyToBaseOffset;
 
-			if (robotDriver != null)
-			{
+			// if (robotDriver != null)
+			// {
 // 				if (OVRInput.Get(OVRInput.Axis1D.PrimaryIndexTrigger, OVRInput.Controller.LTouch) > 0)
 // 				{
-					robotLeftHandObjective.position = humanLeftHand.position;
-					robotLeftHandObjective.eulerAngles = humanLeftHand.eulerAngles;
+					// robotLeftHandObjective.position = humanLeftHand.position;
+					// robotLeftHandObjective.eulerAngles = humanLeftHand.eulerAngles;
 					humanLeftHandOpen = OVRInput.Get(OVRInput.Axis1D.PrimaryHandTrigger, OVRInput.Controller.LTrackedRemote);
 					trackingLeft = true;
 // 				}
@@ -584,11 +593,11 @@ public class UnityAnimusClient : MonoBehaviour {
 // 				{
 // 					trackingLeft = false;
 // 				}
-			
+
 // 				if (OVRInput.Get(OVRInput.Axis1D.PrimaryIndexTrigger, OVRInput.Controller.RTouch) > 0)
 // 				{
-					robotRightHandObjective.position = humanRightHand.position;
-					robotRightHandObjective.eulerAngles = humanRightHand.eulerAngles;
+					// robotRightHandObjective.position = humanRightHand.position;
+					// robotRightHandObjective.eulerAngles = humanRightHand.eulerAngles;
 					humanRightHandOpen = OVRInput.Get(OVRInput.Axis1D.PrimaryHandTrigger, OVRInput.Controller.RTrackedRemote);
 					trackingRight = true;
 // 				}
@@ -597,11 +606,11 @@ public class UnityAnimusClient : MonoBehaviour {
 // 					trackingRight = false;
 // 				}
 
-				
-			}
+
+			// }
 		}
-		
-		
+
+
 	}
 
 	// --------------------------Voice Modality----------------------------------
@@ -621,7 +630,7 @@ public class UnityAnimusClient : MonoBehaviour {
 		voiceEnabled = false;
 		return true;
 	}
-	
+
 	// --------------------------Emotion Modality----------------------------------
 	public bool emotion_initialise()
 	{
@@ -634,8 +643,8 @@ public class UnityAnimusClient : MonoBehaviour {
 	public Sample emotion_get()
 
 	{
-		
-		var controlCombination = ((LeftButton1 ? 1 : 0) * 1) + 
+
+		var controlCombination = ((LeftButton1 ? 1 : 0) * 1) +
 		                         ((LeftButton2 ? 1 : 0) * 2) +
 		                         ((RightButton1 ? 1 : 0) * 4) +
 		                         ((RightButton2 ? 1 : 0) * 8);
@@ -680,7 +689,7 @@ public class UnityAnimusClient : MonoBehaviour {
 				Debug.Log("Unassigned Combination");
 				break;
 		}
-		
+
 
 		emotionMsg.Data = currentEmotion;
 		Debug.Log(currentEmotion);
@@ -718,7 +727,7 @@ public class UnityAnimusClient : MonoBehaviour {
 	{
 		return new Quaternion(-quaternion.z, quaternion.x, -quaternion.y, quaternion.w);
 	}
-	
+
 	public double ClipAngle(double angle)
     {
 	    if (angle > 180)
@@ -732,5 +741,3 @@ public class UnityAnimusClient : MonoBehaviour {
 	    return angle;
     }
 }
-
-
